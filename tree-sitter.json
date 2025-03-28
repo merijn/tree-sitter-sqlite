@@ -1,0 +1,40 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "sqlite",
+      "camelcase": "SQLite",
+      "title": "SQLite",
+      "scope": "source.sqlite",
+      "file-types": [
+        "sql",
+        "sqlite"
+      ],
+      "injection-regex": "^sqlite$",
+      "class-name": "TreeSitterSqlite"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "GPL-3.0-or-later",
+    "description": "SQLite grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Merijn Verstraaten",
+        "email": "merijn@inconsistent.nl"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/merijn/tree-sitter-sqlite"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
