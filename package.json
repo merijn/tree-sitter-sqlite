@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "prebuildify": "^6.0.1",
+    "typescript": "^5.0.0",
     "tree-sitter-cli": "^0.25.3"
   },
   "peerDependencies": {
@@ -44,6 +45,8 @@
     }
   },
   "scripts": {
+    "build": "tsc",
+    "generate": "npm run build && tree-sitter generate dist/grammar.js",
     "install": "node-gyp-build",
     "prestart": "tree-sitter build --wasm",
     "start": "tree-sitter playground",

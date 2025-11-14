@@ -1,5 +1,20 @@
 import { identifier_regex } from './utils.js';
 
+class OperatorPrec {
+  precLevel: number;
+  rules: RuleOrLiteral[];
+
+  constructor(prec: number, rules: RuleOrLiteral[]) {
+    this.precLevel = prec;
+    this.rules = rules;
+  }
+
+  makeRulesWith(toRule: (baseRule: RuleOrLiteral) => RuleOrLiteral): PrecLeftRule[] {
+    return this.rules.map(r => prec.left(this.precLevel, toRule(r)));
+  }
+}
+
+
 export const expr = {
   expr: $ => choice(
     $.literal,
@@ -39,20 +54,15 @@ export const expr = {
 
   prefix_expr: $ => {
     const table = [
-      [12, ["~", "+", "-"]],
-      [3, [$.keyword_not]]
+      new OperatorPrec(12, ["~", "+", "-"]),
+      new OperatorPrec(3, [$.keyword_not])
     ];
 
-    const makeRule = (level, op) => prec(
-      level,
-      seq(
-        field('operator', op),
+    const rules = table.flatMap(op =>
+      op.makeRulesWith(parser => seq(
+        field('operator', parser),
         field('expr', $.expr),
-      )
-    );
-
-    const rules = table.flatMap(([level, ops]) =>
-      ops.map(op => makeRule(level, op))
+      ))
     );
 
     return choice(...rules);
@@ -60,31 +70,27 @@ export const expr = {
 
   postfix_expr: $ => {
     const table = [
-      [11, [
+      new OperatorPrec(11, [
         seq(
           $.expr,
           $.keyword_collate,
           field('collation', $.identifier)
         )
-      ]],
-      [
-        4, [
+      ]),
+      new OperatorPrec(4, [
         $.keyword_isnull,
         $.keyword_notnull,
         seq($.keyword_not, $.keyword_null)
-      ]]
+      ])
     ];
 
-    const makeRule = (level, op) => prec(
-      level,
-      seq(
-        field('expr', $.expr),
-        field('operator', op),
+    const rules = table.flatMap(op =>
+      op.makeRulesWith(parser =>
+        seq(
+          field('expr', $.expr),
+          field('operator', parser),
+        )
       )
-    );
-
-    const rules = table.flatMap(([level, ops]) =>
-      ops.map(op => makeRule(level, op))
     );
 
     const between_expr = prec(4,
@@ -103,12 +109,12 @@ export const expr = {
 
   infix_expr: $ => {
     const table = [
-      [10, ["||", "->", "->>"]],
-      [9, ["*", "/", "%"]],
-      [8, ["+", "-"]],
-      [7, ["&", "|", "<<", ">>"]],
-      [5, ["<", ">", "<=", ">="]],
-      [4, [
+      new OperatorPrec(10, ["||", "->", "->>"]),
+      new OperatorPrec(9, ["*", "/", "%"]),
+      new OperatorPrec(8, ["+", "-"]),
+      new OperatorPrec(7, ["&", "|", "<<", ">>"]),
+      new OperatorPrec(5, ["<", ">", "<=", ">="]),
+      new OperatorPrec(4, [
         "=",
         "==",
         "<>",
@@ -132,22 +138,19 @@ export const expr = {
             $.keyword_glob,
           )
         ),
-      ]],
-      [2, [$.keyword_and]],
-      [1, [$.keyword_or]],
+      ]),
+      new OperatorPrec(2, [$.keyword_and]),
+      new OperatorPrec(1, [$.keyword_or]),
     ]
 
-    const makeRule = (level, op) => prec.left(
-      level,
-      seq(
-        field('left', $.expr),
-        field('operator', op),
-        field('right', $.expr),
+    const rules = table.flatMap(op =>
+      op.makeRulesWith(parser =>
+        seq(
+          field('left', $.expr),
+          field('operator', parser),
+          field('right', $.expr),
+        )
       )
-    );
-
-    const rules = table.flatMap(([level, ops]) =>
-      ops.map(op => makeRule(level, op))
     );
 
     const like_expr = prec.left(

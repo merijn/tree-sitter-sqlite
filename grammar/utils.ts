@@ -1,4 +1,6 @@
-function case_insensitive(word) {
+/// <reference types="tree-sitter-cli/dsl" />
+
+function case_insensitive(word: string): RustRegex {
   return new RustRegex('(?i)' + word);
 }
 
