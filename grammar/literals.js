@@ -1,4 +1,4 @@
-const utils = require('./utils.js');
+import { case_insensitive } from './utils.js';
 
 const sign = optional(choice('+', '-'));
 const nonHexLiteral = seq(
@@ -17,7 +17,7 @@ const string_literal = /'([^'\u0000]|'')*'/;
 
 const blob_literal = /[xX]'([a-fA-F0-9]{2})*'/;
 
-module.exports = {
+export const literals = {
   sign: _ => sign,
 
   signed_numeric_literal: _ => seq(sign, numeric_literal),
@@ -27,13 +27,13 @@ module.exports = {
   blob_literal: _ => blob_literal,
 
   boolean: _ => choice(
-    utils.case_insensitive("TRUE"),
-    utils.case_insensitive("FALSE"),
+    case_insensitive("TRUE"),
+    case_insensitive("FALSE"),
   ),
 
-  current_time: _ => utils.case_insensitive("CURRENT_TIME"),
-  current_date: _ => utils.case_insensitive("CURRENT_DATE"),
-  current_timestamp: _ => utils.case_insensitive("CURRENT_TIMESTAMP"),
+  current_time: _ => case_insensitive("CURRENT_TIME"),
+  current_date: _ => case_insensitive("CURRENT_DATE"),
+  current_timestamp: _ => case_insensitive("CURRENT_TIMESTAMP"),
 
   literal: $ => choice(
     $.numeric_literal,

@@ -1,6 +1,6 @@
-const utils = require('./utils.js');
+import { case_insensitive } from './utils.js';
 
-module.exports = {
+export const keywords = {
   keyword_abort: _ => keyword("ABORT"),
   keyword_action: _ => keyword("ACTION"),
   keyword_add: _ => keyword("ADD"),
@@ -151,5 +151,5 @@ module.exports = {
 };
 
 function keyword(word) {
-  return utils.case_insensitive(word);
+  return case_insensitive(word);
 }

@@ -1,6 +1,7 @@
 {
   "name": "tree-sitter-sqlite",
   "version": "0.1.0",
+  "type": "module",
   "description": "SQLite grammar for tree-sitter",
   "repository": "https://github.com/merijn/tree-sitter-sqlite",
   "license": "GPL 3.0",

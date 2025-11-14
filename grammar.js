@@ -7,13 +7,13 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-const utils = require('./grammar/utils.js')
-const keywords = require('./grammar/keywords.js');
-const literals = require('./grammar/literals.js');
-const columns = require('./grammar/columns.js');
-const expr = require('./grammar/expr.js');
+import { identifier_regex, double_quote_identifier_regex, mssql_identifier_regex, mysql_identifier_regex } from './grammar/utils.js';
+import { keywords } from './grammar/keywords.js';
+import { literals } from './grammar/literals.js';
+import { columns } from './grammar/columns.js';
+import { expr } from './grammar/expr.js';
 
-module.exports = grammar({
+export default grammar({
   name: "sqlite",
 
   //word: $ => $._identifier,
@@ -111,9 +111,9 @@ module.exports = grammar({
       $._mysql_identifier
     ),
 
-    _identifier: _ => utils.identifier_regex,
-    _double_quote_identifier: _ => utils.double_quote_identifier_regex,
-    _mssql_identifier: _ => utils.mssql_identifier_regex,
-    _mysql_identifier: _ => utils.mysql_identifier_regex,
+    _identifier: _ => identifier_regex,
+    _double_quote_identifier: _ => double_quote_identifier_regex,
+    _mssql_identifier: _ => mssql_identifier_regex,
+    _mysql_identifier: _ => mysql_identifier_regex,
   }
 });

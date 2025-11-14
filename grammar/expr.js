@@ -1,6 +1,6 @@
-const utils = require('./utils.js');
+import { identifier_regex } from './utils.js';
 
-module.exports = {
+export const expr = {
   expr: $ => choice(
     $.literal,
     $.bind_parameter,
@@ -20,7 +20,7 @@ module.exports = {
   _question_bind: _ => seq('?', optional(token.immediate(/[0-9_]{1,}/))),
   _name_bind: _ => seq(
     choice(':', '@'),
-    token.immediate(utils.identifier_regex)
+    token.immediate(identifier_regex)
   ),
   //TODO
   //_tcl_bind: _ => "TODO",

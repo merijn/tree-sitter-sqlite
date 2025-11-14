@@ -1,6 +1,6 @@
-const utils = require('./utils.js');
+import { case_insensitive } from './utils.js';
 
-module.exports = {
+export const columns = {
   column_def: $ => seq(
     field('name', $.identifier),
     optional($.column_type),
@@ -13,12 +13,12 @@ module.exports = {
   ),
 
   strict_column_type: _ => choice(
-    utils.case_insensitive("INT"),
-    utils.case_insensitive("INTEGER"),
-    utils.case_insensitive("REAL"),
-    utils.case_insensitive("TEXT"),
-    utils.case_insensitive("BLOB"),
-    utils.case_insensitive("ANY"),
+    case_insensitive("INT"),
+    case_insensitive("INTEGER"),
+    case_insensitive("REAL"),
+    case_insensitive("TEXT"),
+    case_insensitive("BLOB"),
+    case_insensitive("ANY"),
   ),
 
   loose_column_type: $ => seq(
