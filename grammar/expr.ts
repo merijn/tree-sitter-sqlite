@@ -1,3 +1,5 @@
+import * as keyword from './keywords.js';
+import { literal, string_literal } from './literals.js';
 import { identifier_regex } from './utils.js';
 
 class OperatorPrec {
@@ -17,7 +19,7 @@ class OperatorPrec {
 
 export const expr = {
   expr: $ => choice(
-    $.literal,
+    literal,
     $.bind_parameter,
     $.column_reference,
     $.prefix_expr,
@@ -55,7 +57,7 @@ export const expr = {
   prefix_expr: $ => {
     const table = [
       new OperatorPrec(12, ["~", "+", "-"]),
-      new OperatorPrec(3, [$.keyword_not])
+      new OperatorPrec(3, [keyword.not])
     ];
 
     const rules = table.flatMap(op =>
@@ -73,14 +75,14 @@ export const expr = {
       new OperatorPrec(11, [
         seq(
           $.expr,
-          $.keyword_collate,
+          keyword.collate,
           field('collation', $.identifier)
         )
       ]),
       new OperatorPrec(4, [
-        $.keyword_isnull,
-        $.keyword_notnull,
-        seq($.keyword_not, $.keyword_null)
+        keyword.isnull,
+        keyword.notnull,
+        seq(keyword.not, keyword.null_)
       ])
     ];
 
@@ -96,10 +98,10 @@ export const expr = {
     const between_expr = prec(4,
       seq(
         $.expr,
-        optional($.keyword_not),
-        $.keyword_between,
+        optional(keyword.not),
+        keyword.between,
         $.expr,
-        $.keyword_and,
+        keyword.and,
         $.expr
       )
     );
@@ -120,27 +122,27 @@ export const expr = {
         "<>",
         "!=",
         seq(
-          $.keyword_is,
-          optional($.keyword_not),
+          keyword.is,
+          optional(keyword.not),
           optional(
             seq(
-              $.keyword_distinct,
-              $.keyword_from
+              keyword.distinct,
+              keyword.from
             )
           )
         ),
         seq(
-          optional($.keyword_not),
+          optional(keyword.not),
           choice(
-            $.keyword_in,
-            $.keyword_match,
-            $.keyword_regexp,
-            $.keyword_glob,
+            keyword.in_,
+            keyword.match,
+            keyword.regexp,
+            keyword.glob,
           )
         ),
       ]),
-      new OperatorPrec(2, [$.keyword_and]),
-      new OperatorPrec(1, [$.keyword_or]),
+      new OperatorPrec(2, [keyword.and]),
+      new OperatorPrec(1, [keyword.or]),
     ]
 
     const rules = table.flatMap(op =>
@@ -157,14 +159,14 @@ export const expr = {
       4,
       seq(
         field('left', $.expr),
-        field('operator', seq(optional($.keyword_not), $.keyword_like)),
+        field('operator', seq(optional(keyword.not), keyword.like)),
         field('right', $.expr),
         optional(
           prec(
             6,
             seq(
-              $.keyword_escape,
-              $.string_literal
+              keyword.escape,
+              string_literal
             )
           )
         )

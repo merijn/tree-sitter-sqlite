@@ -1,4 +1,6 @@
+import * as keyword from './keywords.js';
 import { case_insensitive } from './utils.js';
+import { signed_numeric_literal } from './literals.js';
 
 export const columns = {
   column_def: $ => seq(
@@ -30,16 +32,16 @@ export const columns = {
     '(',
     optional(
       seq(
-        alias($.signed_numeric_literal, $.numeric_literal),
+        alias(signed_numeric_literal, $.numeric_literal),
         ','
       )
     ),
-    alias($.signed_numeric_literal, $.numeric_literal),
+    alias(signed_numeric_literal, $.numeric_literal),
     ')',
   ),
 
   constraint_name: $ => seq(
-    $.keyword_constraint,
+    keyword.constraint,
     field("name", $.identifier),
   ),
 
@@ -55,40 +57,40 @@ export const columns = {
   ),
 
   primary_key_constraint: $ => seq(
-    $.keyword_primary,
-    $.keyword_key,
-    optional(choice($.keyword_asc, $.keyword_desc)),
+    keyword.primary,
+    keyword.key,
+    optional(choice(keyword.asc, keyword.desc)),
     optional($.conflict_clause),
-    optional($.keyword_autoincrement),
+    optional(keyword.autoincrement),
   ),
 
   not_null_constraint: $ => seq(
-    $.keyword_not,
-    $.keyword_null,
+    keyword.not,
+    keyword.null_,
     optional($.conflict_clause),
   ),
 
   unique_constraint: $ => seq(
-    $.keyword_unique,
+    keyword.unique,
     optional($.conflict_clause),
   ),
 
   check_constraint: $ => seq(
-    $.keyword_check,
+    keyword.check,
     '(',
     field('expr', $.expr),
     ')',
   ),
 
-  conflict_clause: $ => seq(
-    $.keyword_on,
-    $.keyword_conflict,
+  conflict_clause: _ => seq(
+    keyword.on,
+    keyword.conflict,
     choice(
-      $.keyword_rollback,
-      $.keyword_abort,
-      $.keyword_fail,
-      $.keyword_ignore,
-      $.keyword_replace,
+      keyword.rollback,
+      keyword.abort,
+      keyword.fail,
+      keyword.ignore,
+      keyword.replace,
     ),
   ),
 }

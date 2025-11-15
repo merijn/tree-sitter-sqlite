@@ -8,8 +8,7 @@
 // @ts-check
 
 import { identifier_regex, double_quote_identifier_regex, mssql_identifier_regex, mysql_identifier_regex } from './grammar/utils.js';
-import { keywords } from './grammar/keywords.js';
-import { literals } from './grammar/literals.js';
+import * as keyword from './grammar/keywords.js';
 import { columns } from './grammar/columns.js';
 import { expr } from './grammar/expr.js';
 
@@ -34,8 +33,6 @@ export default grammar({
       optional($.statement)
     ),
 
-    ...keywords,
-    ...literals,
     ...columns,
     ...expr,
 
@@ -46,19 +43,19 @@ export default grammar({
       )
     ),
 
-    explain: $ => seq(
-      $.keyword_explain,
+    explain: _ => seq(
+      keyword.explain,
       optional(
         seq(
-          $.keyword_query,
-          $.keyword_plan
+          keyword.query,
+          keyword.plan
         )
       )
     ),
 
     alter_table_statement: $ => seq(
-      $.keyword_alter,
-      $.keyword_table,
+      keyword.alter,
+      keyword.table,
       field('table', $.table_reference),
       choice(
         $.rename_table,
@@ -69,28 +66,28 @@ export default grammar({
     ),
 
     rename_table: $ => seq(
-      $.keyword_rename,
-      $.keyword_to,
+      keyword.rename,
+      keyword.to,
       $._table_name,
     ),
 
     rename_column: $ => seq(
-      $.keyword_rename,
-      optional($.keyword_column),
+      keyword.rename,
+      optional(keyword.column),
       field('from', $.identifier),
-      $.keyword_to,
+      keyword.to,
       field('to', $.identifier),
     ),
 
     add_column: $ => seq(
-      $.keyword_add,
-      optional($.keyword_column),
+      keyword.add,
+      optional(keyword.column),
       $.column_def
     ),
 
     drop_column: $ => seq(
-      $.keyword_drop,
-      optional($.keyword_column),
+      keyword.drop,
+      optional(keyword.column),
       field('name', $.identifier),
     ),
 

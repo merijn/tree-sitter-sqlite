@@ -1,21 +1,13 @@
 /// <reference types="tree-sitter-cli/dsl" />
 
-function case_insensitive(word: string): RustRegex {
+export function case_insensitive(word: string): RustRegex {
   return new RustRegex('(?i)' + word);
 }
 
-const identifier_regex = /[A-Za-z_\u007f-\uffff][0-9A-Za-z_\u007f-\uffff$]*/;
+export const identifier_regex: RegExp = /[A-Za-z_\u007f-\uffff][0-9A-Za-z_\u007f-\uffff$]*/;
 
-const double_quote_identifier_regex = /"[^"\u0000]*"/;
+export const double_quote_identifier_regex: RegExp = /"[^"\u0000]*"/;
 
-const mssql_identifier_regex = /\[[^\u0000\]]\]/;
+export const mssql_identifier_regex: RegExp = /\[[^\u0000\]]\]/;
 
-const mysql_identifier_regex = /`[^`\u0000]`/;
-
-export {
-  case_insensitive,
-  identifier_regex,
-  double_quote_identifier_regex,
-  mssql_identifier_regex,
-  mysql_identifier_regex
-}
+export const mysql_identifier_regex: RegExp = /`[^`\u0000]`/;
