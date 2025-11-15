@@ -10,5 +10,9 @@
     "allowJs": true,
     "noImplicitAny": false
   },
-  "include": ["grammar.ts", "grammar/*.ts"]
+  "include": [
+    "grammar.ts",
+    "grammar/*.ts",
+    "types/*.d.ts"
+  ]
 }

@@ -22,7 +22,6 @@ export default grammar({
   ],
 
   rules: {
-
     source_file: $ => seq(
       repeat(
         seq(

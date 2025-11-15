@@ -3,18 +3,18 @@ import { case_insensitive } from './utils.js';
 import { signed_numeric_literal } from './literals.js';
 
 export const columns = {
-  column_def: $ => seq(
+  column_def: ($: GrammarCtx) => seq(
     field('name', $.identifier),
     optional($.column_type),
     repeat($.column_constraint),
   ),
 
-  column_type: $ => choice(
+  column_type: ($: GrammarCtx) => choice(
     $.strict_column_type,
     $.loose_column_type
   ),
 
-  strict_column_type: _ => choice(
+  strict_column_type: (_: GrammarCtx) => choice(
     case_insensitive("INT"),
     case_insensitive("INTEGER"),
     case_insensitive("REAL"),
@@ -23,12 +23,12 @@ export const columns = {
     case_insensitive("ANY"),
   ),
 
-  loose_column_type: $ => seq(
+  loose_column_type: ($: GrammarCtx) => seq(
     repeat1($.identifier),
     optional($.type_size),
   ),
 
-  type_size: $ => seq(
+  type_size: ($: GrammarCtx) => seq(
     '(',
     optional(
       seq(
@@ -40,12 +40,12 @@ export const columns = {
     ')',
   ),
 
-  constraint_name: $ => seq(
+  constraint_name: ($: GrammarCtx) => seq(
     keyword.constraint,
     field("name", $.identifier),
   ),
 
-  column_constraint: $ => seq(
+  column_constraint: ($: GrammarCtx) => seq(
     optional($.constraint_name),
     choice(
       $.primary_key_constraint,
@@ -56,7 +56,7 @@ export const columns = {
     ),
   ),
 
-  primary_key_constraint: $ => seq(
+  primary_key_constraint: ($: GrammarCtx) => seq(
     keyword.primary,
     keyword.key,
     optional(choice(keyword.asc, keyword.desc)),
@@ -64,25 +64,25 @@ export const columns = {
     optional(keyword.autoincrement),
   ),
 
-  not_null_constraint: $ => seq(
+  not_null_constraint: ($: GrammarCtx) => seq(
     keyword.not,
     keyword.null_,
     optional($.conflict_clause),
   ),
 
-  unique_constraint: $ => seq(
+  unique_constraint: ($: GrammarCtx) => seq(
     keyword.unique,
     optional($.conflict_clause),
   ),
 
-  check_constraint: $ => seq(
+  check_constraint: ($: GrammarCtx) => seq(
     keyword.check,
     '(',
     field('expr', $.expr),
     ')',
   ),
 
-  conflict_clause: _ => seq(
+  conflict_clause: (_: GrammarCtx) => seq(
     keyword.on,
     keyword.conflict,
     choice(
